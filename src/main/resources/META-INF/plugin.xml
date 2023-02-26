@@ -1,6 +1,6 @@
 <idea-plugin>
-    <id>andrasferenczi.dart-data-plugin</id>
-    <name>Dart Data Class</name>
+    <id>andrasferenczi.dart-data-plugin.tory</id>
+    <name>Dart Data Class Tory</name>
     <vendor email="a.ferenczi.andras@gmail.com">Andras Ferenczi</vendor>
 
     <depends>Dart</depends>
@@ -12,6 +12,7 @@
 
     <description><![CDATA[
         <p>Essential utility methods generator for Dart data classes.</p>
+        <p>Modify by tory.</p>
         <br/>
         <br/>
         <p>Features:</p>
@@ -104,6 +105,14 @@
                           anchor="after"
                           relative-to-action="andrasferenczi.action.DartCopyWithAction"/>
         </action>
+        <action id="andrasferenczi.action.JsonAction"
+                class="andrasferenczi.action.JsonAction"
+                text="toJson() and fromJson()">
+            <add-to-group group-id="GenerateGroup"
+                          anchor="after"
+                          relative-to-action="andrasferenczi.action.MapAction"/>
+        </action>
+
         <action id="andrasferenczi.action.FullDataAction"
                 class="andrasferenczi.action.FullDataAction"
                 text="Data Class Section">

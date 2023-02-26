@@ -61,7 +61,8 @@ class MapAction : BaseAnAction() {
                     variables = variableNames,
                     useNewKeyword = configuration.useNewKeyword,
                     addKeyMapper = configuration.addKeyMapperForMap,
-                    noImplicitCasts = configuration.noImplicitCasts
+                    noImplicitCasts = configuration.noImplicitCasts,
+                    parseWrapper = configuration.parseWrapper
                 )
             )
 

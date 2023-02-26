@@ -150,6 +150,9 @@ fun createConfigurationUI(input: ConfigurationData): ConfigurationUIElements {
         }
     )
 
+
+    val parseClassNameTextField = buildRowTextField(pane, "Parse Class Name", input.parseWrapper.parseClassName, 9)
+
     // Remaining space
     pane.add(
         JPanel(),
@@ -170,6 +173,33 @@ fun createConfigurationUI(input: ConfigurationData): ConfigurationUIElements {
         optimizeConstCopyCheckbox,
         addKeyMapperForMapCheckbox,
         noImplicitCastsCheckbox,
-        nullSafetyCheckbox
+        nullSafetyCheckbox,
+
+        parseClassNameTextField
     )
+}
+
+fun buildRowTextField(pane: JPanel, label: String, content: String, y: Int): JTextField {
+    pane.add(
+        JLabel(label),
+        GridBagConstraints().apply {
+            fill = GridBagConstraints.HORIZONTAL
+            gridx = 0
+            gridy = y
+            insets = Insets(TOP_INSET, NO_CHECKBOX_LEFT_INSET, BOTTOM_INSET, RIGHT_INSET)
+        }
+    )
+
+    val textField = JTextField(content)
+    pane.add(
+        textField,
+        GridBagConstraints().apply {
+            fill = GridBagConstraints.HORIZONTAL
+            weightx = 0.6
+            gridx = 1
+            gridy = y
+            insets = Insets(TOP_INSET, CHECKBOX_LEFT_INSET, BOTTOM_INSET, RIGHT_INSET)
+        }
+    )
+    return textField
 }

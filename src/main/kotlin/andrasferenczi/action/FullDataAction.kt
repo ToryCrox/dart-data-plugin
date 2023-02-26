@@ -39,14 +39,13 @@ class FullDataAction : BaseAnAction() {
         val templateManager = TemplateManager.getInstance(project)
 
         val processActions = listOf(
-            NamedArgumentConstructorAction.Companion,
-            MyEqualsAction.Companion,
-            MyHashCodeAction.Companion,
-            MyToStringAction.Companion,
-            DartCopyWithAction.Companion,
-            MapAction.Companion
-        )
-            .map { it.processAction(generationData) }
+            NamedArgumentConstructorAction,
+            MyEqualsAction,
+            MyHashCodeAction,
+            MyToStringAction,
+            DartCopyWithAction,
+            MapAction
+        ).map { it.processAction(generationData) }
 
         return listOf(
             // TODO

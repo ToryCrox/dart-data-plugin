@@ -5,18 +5,27 @@ import andrasferenczi.templater.TemplateType
 import com.intellij.codeInsight.template.Template
 import com.intellij.codeInsight.template.TemplateManager
 
+/**
+ * 添加小括号
+ */
 inline fun Template.withParentheses(action: Template.() -> Unit) {
     this.addTextSegment("(")
     this.action()
     this.addTextSegment(")")
 }
 
+/**
+ * 添加大括号
+ */
 inline fun Template.withCurlyBraces(action: Template.() -> Unit) {
     this.addTextSegment("{")
     this.action()
     this.addTextSegment("}")
 }
 
+/**
+ * 添加方括号
+ */
 inline fun Template.withBrackets(action: Template.() -> Unit) {
     this.addTextSegment("[")
     this.action()

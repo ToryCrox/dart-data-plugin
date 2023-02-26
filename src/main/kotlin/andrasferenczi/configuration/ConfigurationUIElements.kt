@@ -15,7 +15,9 @@ class ConfigurationUIElements constructor(
     val optimizeConstCopyCheckbox: JCheckBox,
     val addKeyMapperForMapCheckbox: JCheckBox,
     val noImplicitCastsCheckbox: JCheckBox,
-    val nullSafety: JCheckBox
+    val nullSafety: JCheckBox,
+
+    val parseClassNameTextField: JTextField
 ) {
 
 
@@ -28,7 +30,10 @@ class ConfigurationUIElements constructor(
             optimizeConstCopy = optimizeConstCopyCheckbox.isSelected,
             addKeyMapperForMap = addKeyMapperForMapCheckbox.isSelected,
             noImplicitCasts = noImplicitCastsCheckbox.isSelected,
-            nullSafety = nullSafety.isSelected
+            nullSafety = nullSafety.isSelected,
+            parseWrapper = ParseWrapper(
+                parseClassName = parseClassNameTextField.text
+            )
         )
     }
 
@@ -41,6 +46,8 @@ class ConfigurationUIElements constructor(
         addKeyMapperForMapCheckbox.isSelected = configurationData.addKeyMapperForMap
         noImplicitCastsCheckbox.isSelected = configurationData.noImplicitCasts
         nullSafety.isSelected = configurationData.nullSafety
+
+        parseClassNameTextField.text = configurationData.parseWrapper.parseClassName
     }
 
 }

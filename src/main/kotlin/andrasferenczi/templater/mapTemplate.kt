@@ -1,5 +1,6 @@
 package andrasferenczi.templater
 
+import andrasferenczi.configuration.ParseWrapper
 import andrasferenczi.ext.*
 import com.intellij.codeInsight.template.Template
 import com.intellij.codeInsight.template.TemplateManager
@@ -9,7 +10,8 @@ data class MapTemplateParams(
     val variables: List<AliasedVariableTemplateParam>,
     val useNewKeyword: Boolean,
     val addKeyMapper: Boolean,
-    val noImplicitCasts: Boolean
+    val noImplicitCasts: Boolean,
+    val parseWrapper: ParseWrapper
 )
 
 // The 2 will be generated with the same function
@@ -90,7 +92,6 @@ private fun Template.addToMap(params: MapTemplateParams) {
 
                 addTextSegment(":")
                 addSpace()
-                addTextSegment("this.")
                 addTextSegment(it.variableName)
                 addComma()
                 addNewLine()
@@ -155,26 +156,35 @@ private fun Template.addFromMap(
                 addTextSegment(it.publicVariableName)
                 addTextSegment(":")
                 addSpace()
-                addTextSegment(TemplateConstants.MAP_VARIABLE_NAME)
 
-                withBrackets {
-                    "'${it.mapKeyString}'".also { keyParam ->
-                        if (addKeyMapper) {
-                            addTextSegment(TemplateConstants.KEYMAPPER_VARIABLE_NAME)
-                            withParentheses {
+                // 添加map[key]
+                val addMapValue = {
+                    addTextSegment(TemplateConstants.MAP_VARIABLE_NAME)
+                    withBrackets {
+                        "'${it.mapKeyString}'".also { keyParam ->
+                            if (addKeyMapper) {
+                                addTextSegment(TemplateConstants.KEYMAPPER_VARIABLE_NAME)
+                                withParentheses {
+                                    addTextSegment(keyParam)
+                                }
+                            } else {
                                 addTextSegment(keyParam)
                             }
-                        } else {
-                            addTextSegment(keyParam)
                         }
                     }
                 }
 
-                if(noImplicitCasts) {
+                val isWrapped = withParseWrapper(it.type, params.parseWrapper) {
+                    addMapValue()
+                }
+
+                // 非空设置默认值
+                if (!isWrapped && !it.isNullable) {
                     addSpace()
-                    addTextSegment("as")
+                    //addTextSegment("as")
+                    addTextSegment("??")
                     addSpace()
-                    addTextSegment(it.type)
+                    addTextSegment(it.defaultValue)
                 }
 
                 addComma()
@@ -182,5 +192,64 @@ private fun Template.addFromMap(
             }
         }
         addSemicolon()
+    }
+}
+
+// 包裹自定义装换
+fun Template.withParseWrapper(
+    typeName: String,
+    parseWrapper: ParseWrapper,
+    action: Template.() -> Unit
+): Boolean {
+    val parseWrapperMethod = when(typeName){
+        "String" -> "parseString"
+        "int" -> "parseInt"
+        "double" -> "parseDouble"
+        "bool" -> "parseBool"
+        "Map" -> "parseMap"
+        "Map<String, dynamic>" -> "parseMap"
+        "List<Int>" -> "parseIntList"
+        "List<String>" -> "parseStringList"
+        else -> ""
+    }
+    if (parseWrapperMethod.isNotBlank()) {
+        this.addTextSegment("${parseWrapper.parseClassName}.")
+        this.addTextSegment(parseWrapperMethod)
+        this.addTextSegment("(")
+        this.action()
+        this.addTextSegment(")")
+        return true
+    } else if (typeName.startsWith("List")) {
+        val subTypeName = typeName.substringAfter("List").replaceFirst("<", "").removeSuffix(">")
+        this.addTextSegment("${parseWrapper.parseClassName}.")
+        this.addTextSegment("parseList")
+        this.addTextSegment("(")
+        this.action()
+        this.addTextSegment(", (e) => ")
+        this.withParseWrapper(subTypeName, parseWrapper) {
+            this.addTextSegment("e")
+        }
+        this.addTextSegment(")")
+        return true
+    } else if (typeName.startsWith("Set")) {
+        this.withParseWrapper(typeName.replace("Set", "List"), parseWrapper) {
+            this.addTextSegment("e")
+        }
+        addTextSegment(".toSet()")
+        return true
+    } else if (typeName == "dynamic"){
+        action()
+        return false
+    } else {
+        this.addTextSegment(typeName)
+        this.addTextSegment(".fromMap")
+        this.withParentheses {
+            this.addTextSegment("${parseWrapper.parseClassName}.")
+            this.addTextSegment("parseMap")
+            this.withParentheses {
+                action()
+            }
+        }
+        return true
     }
 }

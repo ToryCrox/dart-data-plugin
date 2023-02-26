@@ -35,6 +35,7 @@ abstract class BaseAnAction : AnAction() {
 
         val templateManager = TemplateManager.getInstance(project)
 
+
         project.runWriteAction {
             performAction.deleteAction?.let {
                 it.invoke()

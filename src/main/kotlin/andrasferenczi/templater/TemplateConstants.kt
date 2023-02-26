@@ -9,6 +9,10 @@ object TemplateConstants {
     const val TO_MAP_METHOD_NAME = "toMap"
     const val FROM_MAP_METHOD_NAME = "fromMap"
 
+    const val TO_JSON_METHOD_NAME = "toJson"
+    const val FROM_JSON_METHOD_NAME = "fromJson"
+    const val JSON_VARIABLE_NAME = "json"
+
     const val KEYMAPPER_VARIABLE_NAME = "keyMapper"
     const val KEY_VARIABLE_NAME = "key"
 

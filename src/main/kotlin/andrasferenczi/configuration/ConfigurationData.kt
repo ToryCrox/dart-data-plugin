@@ -12,7 +12,8 @@ data class ConfigurationData constructor(
     val optimizeConstCopy: Boolean,
     val addKeyMapperForMap: Boolean,
     val noImplicitCasts: Boolean,
-    val nullSafety: Boolean
+    val nullSafety: Boolean,
+    val parseWrapper: ParseWrapper
 ) {
     companion object {
         val DEFAULT_DATA = ConfigurationData(
@@ -23,7 +24,8 @@ data class ConfigurationData constructor(
             optimizeConstCopy = false,
             addKeyMapperForMap = false,
             noImplicitCasts = true,
-            nullSafety = true
+            nullSafety = true,
+            parseWrapper = ParseWrapper()
         )
 
         val TEST_DATA = DEFAULT_DATA.copy(
@@ -33,3 +35,7 @@ data class ConfigurationData constructor(
 
     }
 }
+
+data class ParseWrapper(
+    val parseClassName: String = ""
+)

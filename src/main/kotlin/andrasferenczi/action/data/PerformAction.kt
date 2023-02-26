@@ -2,7 +2,6 @@ package andrasferenczi.action.data
 
 import andrasferenczi.utils.mergeCalls
 import com.intellij.codeInsight.template.Template
-import sun.misc.Perf
 
 class PerformAction(
     // Some objects might be deleted
@@ -42,5 +41,5 @@ class PerformAction(
 }
 
 fun Iterable<PerformAction?>.combineAll(): PerformAction {
-    return PerformAction.Companion.combineAll(*this.toList().toTypedArray())
+    return PerformAction.combineAll(*this.toList().toTypedArray())
 }
