@@ -48,6 +48,7 @@ class JsonAction : BaseAnAction() {
 
             val template = createJsonTemplate(
                 templateManager,
+                configuration,
                 dartClassName
             )
 

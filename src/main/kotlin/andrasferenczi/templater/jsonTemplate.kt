@@ -1,5 +1,6 @@
 package andrasferenczi.templater
 
+import andrasferenczi.configuration.ConfigurationData
 import andrasferenczi.ext.*
 import andrasferenczi.utils.mergeCalls
 import com.intellij.codeInsight.template.Template
@@ -9,6 +10,7 @@ import com.jetbrains.lang.dart.psi.DartClass
 
 fun createJsonTemplate(
     templateManager: TemplateManager,
+    configuration: ConfigurationData,
     className: String
 ): Template {
 
@@ -16,14 +18,14 @@ fun createJsonTemplate(
         TemplateType.JsonTemplate.templateKey,
         TemplateConstants.DART_TEMPLATE_GROUP
     ).apply {
-        addToJson(className)
+        addFromJson(configuration, className)
         addNewLine()
         addNewLine()
-        addFromJson(className)
+        addToJson(configuration, className)
     }
 }
 
-private fun Template.addToJson(className: String) {
+private fun Template.addToJson(configuration: ConfigurationData, className: String) {
 
     isToReformat = true
 
@@ -38,13 +40,19 @@ private fun Template.addToJson(className: String) {
         addTextSegment("return")
         addSpace()
 
-        addTextSegment("jsonEncode(${TemplateConstants.TO_MAP_METHOD_NAME})")
+        val parseClassName = configuration.parseWrapper.parseClassName
+        if (parseClassName.isNotBlank()) {
+            addTextSegment("${parseClassName}.toJsonString(${TemplateConstants.TO_MAP_METHOD_NAME}())")
+        } else {
+            addTextSegment("jsonEncode(${TemplateConstants.TO_MAP_METHOD_NAME})")
+        }
+
         addSemicolon()
 
     }
 }
 
-private fun Template.addFromJson(className: String) {
+private fun Template.addFromJson(configuration: ConfigurationData, className: String) {
     isToReformat = true
 
     addTextSegment("factory")
@@ -67,7 +75,13 @@ private fun Template.addFromJson(className: String) {
         addDot()
         addTextSegment(TemplateConstants.FROM_MAP_METHOD_NAME)
         withParentheses {
-            addTextSegment("jsonDecode(${TemplateConstants.JSON_VARIABLE_NAME})")
+            val parseClassName = configuration.parseWrapper.parseClassName
+            if (parseClassName.isNotBlank()) {
+                addTextSegment("$parseClassName.parseMap(${TemplateConstants.JSON_VARIABLE_NAME})")
+            } else {
+                addTextSegment("jsonDecode(${TemplateConstants.JSON_VARIABLE_NAME})")
+            }
+
         }
 
         addSemicolon()

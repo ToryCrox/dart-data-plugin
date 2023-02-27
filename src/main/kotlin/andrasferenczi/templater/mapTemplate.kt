@@ -1,6 +1,7 @@
 package andrasferenczi.templater
 
 import andrasferenczi.configuration.ParseWrapper
+import andrasferenczi.constants.DART_BASIC_TYPES
 import andrasferenczi.ext.*
 import com.intellij.codeInsight.template.Template
 import com.intellij.codeInsight.template.TemplateManager
@@ -24,10 +25,10 @@ fun createMapTemplate(
         TemplateType.MapTemplate.templateKey,
         TemplateConstants.DART_TEMPLATE_GROUP
     ).apply {
-        addToMap(params)
-        addNewLine()
-        addNewLine()
         addFromMap(params)
+        addNewLine()
+        addNewLine()
+        addToMap(params)
     }
 }
 
@@ -92,12 +93,25 @@ private fun Template.addToMap(params: MapTemplateParams) {
 
                 addTextSegment(":")
                 addSpace()
-                addTextSegment(it.variableName)
+                toJsonMapValue(it.type, it.variableName)
                 addComma()
                 addNewLine()
             }
         }
         addSemicolon()
+    }
+}
+
+private fun Template.toJsonMapValue(type: String, variableName: String) {
+    if (type.mainType() in setOf("List", "Set") && type.subType()  !in DART_BASIC_TYPES){
+        addTextSegment(variableName)
+        addTextSegment(".map((e)=> ")
+        toJsonMapValue(type.subType(), "e")
+        addTextSegment(").toList()")
+    } else if (type.mainType() in DART_BASIC_TYPES) {
+        addTextSegment(variableName)
+    }  else {
+        addTextSegment("$variableName.toMap()")
     }
 }
 
@@ -220,7 +234,7 @@ fun Template.withParseWrapper(
         this.addTextSegment(")")
         return true
     } else if (typeName.startsWith("List")) {
-        val subTypeName = typeName.substringAfter("List").replaceFirst("<", "").removeSuffix(">")
+        val subTypeName = typeName.subType()
         this.addTextSegment("${parseWrapper.parseClassName}.")
         this.addTextSegment("parseList")
         this.addTextSegment("(")
@@ -233,7 +247,7 @@ fun Template.withParseWrapper(
         return true
     } else if (typeName.startsWith("Set")) {
         this.withParseWrapper(typeName.replace("Set", "List"), parseWrapper) {
-            this.addTextSegment("e")
+            action()
         }
         addTextSegment(".toSet()")
         return true
