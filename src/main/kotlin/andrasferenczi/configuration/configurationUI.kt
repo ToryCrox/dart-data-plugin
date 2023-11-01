@@ -150,8 +150,38 @@ fun createConfigurationUI(input: ConfigurationData): ConfigurationUIElements {
         }
     )
 
+    // ROW 9
+    val useUnderlineJsonName = JCheckBox(
+        "json key是否为下划线模式"
+    )
 
-    val parseClassNameTextField = buildRowTextField(pane, "Parse Class Name", input.parseWrapper.parseClassName, 9)
+    pane.add(
+        useUnderlineJsonName,
+        GridBagConstraints().apply {
+            fill = GridBagConstraints.HORIZONTAL
+            gridx = 0
+            gridy = 8
+            insets = Insets(TOP_INSET, CHECKBOX_LEFT_INSET, BOTTOM_INSET, RIGHT_INSET)
+        }
+    )
+
+    // ROW 8
+    val jsonEqualMap = JCheckBox(
+        "fromJson等同于fromMap方法，toJson等同于toMap方法"
+    )
+
+    pane.add(
+        jsonEqualMap,
+        GridBagConstraints().apply {
+            fill = GridBagConstraints.HORIZONTAL
+            gridx = 0
+            gridy = 9
+            insets = Insets(TOP_INSET, CHECKBOX_LEFT_INSET, BOTTOM_INSET, RIGHT_INSET)
+        }
+    )
+
+
+    val parseClassNameTextField = buildRowTextField(pane, "Parse Class Name", input.parseWrapper.parseClassName, 10)
 
     // Remaining space
     pane.add(
@@ -159,7 +189,7 @@ fun createConfigurationUI(input: ConfigurationData): ConfigurationUIElements {
         GridBagConstraints().apply {
             weighty = 1.0   // request any extra vertical space
             anchor = GridBagConstraints.PAGE_END // bottom of space
-            gridy = 8
+            gridy = 11
             gridwidth = 2
         }
     )
@@ -174,7 +204,8 @@ fun createConfigurationUI(input: ConfigurationData): ConfigurationUIElements {
         addKeyMapperForMapCheckbox,
         noImplicitCastsCheckbox,
         nullSafetyCheckbox,
-
+        useUnderlineJsonName,
+        jsonEqualMap,
         parseClassNameTextField
     )
 }

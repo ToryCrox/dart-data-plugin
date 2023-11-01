@@ -64,6 +64,20 @@ object ConfigurationDataManager {
         )
 
         configuration = configuration.copy(
+            useUnderlineJsonName = properties.getBoolean(
+                Keys.USE_UNDERLINE_JSON_NAME,
+                configuration.useUnderlineJsonName
+            )
+        )
+
+        configuration = configuration.copy(
+            jsonEqualMap = properties.getBoolean(
+                Keys.JSON_EQUAL_MAP,
+                configuration.jsonEqualMap
+            )
+        )
+
+        configuration = configuration.copy(
             parseWrapper = configuration.parseWrapper.copy(
                 parseClassName = properties.getValue(
                     Keys.PARSE_CLASS_NAME,
@@ -126,6 +140,18 @@ object ConfigurationDataManager {
         )
 
         properties.setValue(
+            Keys.USE_UNDERLINE_JSON_NAME,
+            configurationData.useUnderlineJsonName,
+            ConfigurationData.DEFAULT_DATA.noImplicitCasts
+        )
+
+        properties.setValue(
+            Keys.JSON_EQUAL_MAP,
+            configurationData.jsonEqualMap,
+            ConfigurationData.DEFAULT_DATA.noImplicitCasts
+        )
+
+        properties.setValue(
             Keys.PARSE_CLASS_NAME,
             configurationData.parseWrapper.parseClassName,
             ConfigurationData.DEFAULT_DATA.parseWrapper.parseClassName
@@ -141,13 +167,9 @@ object ConfigurationDataManager {
         const val ADD_KEY_MAPPER_FOR_MAP = "dart-data-class.add-key-mapper-for-map"
         const val NO_IMPLICIT_CASTS = "data-data-class.no-implicit-casts"
         const val NULL_SAFETY = "data-data-class.null-safety"
+        const val USE_UNDERLINE_JSON_NAME = "data-data-class.useUnderlineJsonName"
+        const val JSON_EQUAL_MAP = "data-data-class.json_equal_map"
 
         const val PARSE_CLASS_NAME = "data-data-class.parse_class_name"
-        const val PARSE_STRING = "data-data-class.parse_string"
-        const val PARSE_INT = "data-data-class.parse_int"
-        const val PARSE_DOUBLE = "data-data-class.parse_double"
-        const val PARSE_BOOL = "data-data-class.parse_bool"
-        const val PARSE_LIST = "data-data-class.parse_list"
-        const val PARSE_MAP = "data-data-class.parse_map"
     }
 }

@@ -16,6 +16,8 @@ class ConfigurationUIElements constructor(
     val addKeyMapperForMapCheckbox: JCheckBox,
     val noImplicitCastsCheckbox: JCheckBox,
     val nullSafety: JCheckBox,
+    val useUnderlineJsonName: JCheckBox,
+    val jsonEqualMap: JCheckBox,
 
     val parseClassNameTextField: JTextField
 ) {
@@ -31,6 +33,8 @@ class ConfigurationUIElements constructor(
             addKeyMapperForMap = addKeyMapperForMapCheckbox.isSelected,
             noImplicitCasts = noImplicitCastsCheckbox.isSelected,
             nullSafety = nullSafety.isSelected,
+            useUnderlineJsonName = useUnderlineJsonName.isSelected,
+            jsonEqualMap = jsonEqualMap.isSelected,
             parseWrapper = ParseWrapper(
                 parseClassName = parseClassNameTextField.text
             )
@@ -46,6 +50,9 @@ class ConfigurationUIElements constructor(
         addKeyMapperForMapCheckbox.isSelected = configurationData.addKeyMapperForMap
         noImplicitCastsCheckbox.isSelected = configurationData.noImplicitCasts
         nullSafety.isSelected = configurationData.nullSafety
+        useUnderlineJsonName.isSelected = configurationData.useUnderlineJsonName
+        jsonEqualMap.isSelected = configurationData.jsonEqualMap
+
 
         parseClassNameTextField.text = configurationData.parseWrapper.parseClassName
     }

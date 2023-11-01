@@ -5,6 +5,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.jetbrains.lang.dart.psi.DartClass
 
+/**
+ * 删除构造方法
+ */
 fun createConstructorDeleteCallWithUserPrompt(
     project: Project,
     dartClass: DartClass

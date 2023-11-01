@@ -1,5 +1,6 @@
 package andrasferenczi.templater
 
+import andrasferenczi.configuration.ConfigurationData
 import andrasferenczi.ext.*
 import com.intellij.codeInsight.template.Template
 import com.intellij.codeInsight.template.TemplateManager
@@ -11,7 +12,8 @@ data class ToStringTemplateParams(
 
 fun createToStringTemplate(
     templateManager: TemplateManager,
-    params: ToStringTemplateParams
+    params: ToStringTemplateParams,
+    configuration: ConfigurationData
 ): Template {
     val (className, variables) = params
 
@@ -34,33 +36,28 @@ fun createToStringTemplate(
             addSpace()
             withSingleQuotes {
                 addTextSegment(className)
-
-                // Cannot use with, since they are closed in different order
+                addTextSegment("\$")
                 addTextSegment("{")
-            }
-
-            addSpace()
-            addTextSegment("+")
-            addNewLine()
-
-            variables.forEach { variable ->
-                withSingleQuotes {
-                    addSpace()
-                    addTextSegment(variable.variableName)
-                    addTextSegment(":")
-                    addSpace()
-                    addTextSegment("\$")
-                    addTextSegment(variable.variableName)
-                    addComma()
-                }
-
-                addSpace()
-                addTextSegment("+")
-                addNewLine()
-            }
-
-            withSingleQuotes {
+                addTextSegment("${configuration.parseWrapper.parseClassName}.parseString(toMap())")
                 addTextSegment("}")
+                // Cannot use with, since they are closed in different order
+//                addTextSegment("{")
+//
+//                variables.forEachIndexed { index, variable ->
+//
+//                    addTextSegment(variable.variableName)
+//                    addTextSegment(":")
+//                    addSpace()
+//                    addTextSegment("\$")
+//                    addTextSegment(variable.variableName)
+//                    if (index <= variables.size -1) {
+//                        addComma()
+//                        addSpace()
+//                    }
+//                    //addNewLine()
+//                }
+//
+//                addTextSegment("}")
             }
 
             addSemicolon()

@@ -33,6 +33,8 @@ class JsonAction : BaseAnAction() {
             val (actionData, dartClass, declarations) = generationData
             val (project, _, _, _) = actionData
 
+
+
             val toMapMethod = dartClass.findMethodByName(TemplateConstants.TO_MAP_METHOD_NAME)
             val fromMapMethod = dartClass.findNamedConstructor(TemplateConstants.FROM_MAP_METHOD_NAME)
 
@@ -57,10 +59,10 @@ class JsonAction : BaseAnAction() {
 
             return PerformAction(
                 {
-                    mapPerformAction?.deleteAction?.invoke()
+                    //mapPerformAction?.deleteAction?.invoke()
                     deleteCall?.invoke()
                 },
-                mapPerformAction?.templatesToAdd.orEmpty() + listOf(template)
+                listOf(template)
             )
         }
 

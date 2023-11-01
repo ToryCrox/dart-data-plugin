@@ -4,7 +4,7 @@ import andrasferenczi.templater.TemplateConstants
 
 // Input
 // Default values
-data class ConfigurationData constructor(
+data class ConfigurationData(
     val copyWithMethodName: String,
     val useRequiredAnnotation: Boolean,
     val useNewKeyword: Boolean,
@@ -13,6 +13,14 @@ data class ConfigurationData constructor(
     val addKeyMapperForMap: Boolean,
     val noImplicitCasts: Boolean,
     val nullSafety: Boolean,
+    /**
+     * 是否使用下划线的Json名称
+     */
+    val useUnderlineJsonName: Boolean,
+    /**
+     * Json方法是否和Map方法相同
+     */
+    val jsonEqualMap: Boolean,
     val parseWrapper: ParseWrapper
 ) {
     companion object {
@@ -25,7 +33,9 @@ data class ConfigurationData constructor(
             addKeyMapperForMap = false,
             noImplicitCasts = true,
             nullSafety = true,
-            parseWrapper = ParseWrapper()
+            useUnderlineJsonName = true,
+            jsonEqualMap = true,
+            parseWrapper = ParseWrapper(parseClassName = "TypeUtil")
         )
 
         val TEST_DATA = DEFAULT_DATA.copy(

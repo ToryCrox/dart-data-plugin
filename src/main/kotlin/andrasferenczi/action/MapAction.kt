@@ -62,6 +62,7 @@ class MapAction : BaseAnAction() {
                     useNewKeyword = configuration.useNewKeyword,
                     addKeyMapper = configuration.addKeyMapperForMap,
                     noImplicitCasts = configuration.noImplicitCasts,
+                    useUnderlineJsonName = configuration.useUnderlineJsonName,
                     parseWrapper = configuration.parseWrapper
                 )
             )

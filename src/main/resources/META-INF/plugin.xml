@@ -115,10 +115,11 @@
 
         <action id="andrasferenczi.action.FullDataAction"
                 class="andrasferenczi.action.FullDataAction"
-                text="Data Class Section">
+                text="一键创建所有数据类方法">
             <add-to-group group-id="GenerateGroup"
                           anchor="after"
                           relative-to-action="andrasferenczi.action.MapAction"/>
         </action>
+
     </actions>
 </idea-plugin>

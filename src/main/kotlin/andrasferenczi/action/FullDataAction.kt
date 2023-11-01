@@ -40,18 +40,19 @@ class FullDataAction : BaseAnAction() {
 
         val processActions = listOf(
             NamedArgumentConstructorAction,
+            DartCopyWithAction,
+            MapAction,
+            JsonAction,
             MyEqualsAction,
             MyHashCodeAction,
-            MyToStringAction,
-            DartCopyWithAction,
-            MapAction
+            MyToStringAction
         ).map { it.processAction(generationData) }
 
         return listOf(
-            // TODO
-            processCommentBeginAction(dartClass, templateManager),
-            *processActions.toTypedArray(),
-            processCommentEndAction(templateManager)
+            // 开始注释
+            //processCommentBeginAction(dartClass, templateManager),
+            *processActions.toTypedArray()
+            //processCommentEndAction(templateManager)
         )
             .combineAll()
 
@@ -128,8 +129,9 @@ class FullDataAction : BaseAnAction() {
                     addNewLine()
                     addSpace()
                     addSpace()
-                    addTextSegment("//")
+                    addTextSegment("///-----")
                     addTextSegment(createCommentBeginContent())
+                    addTextSegment("-------")
                     addNewLine()
                 }
         }
@@ -140,8 +142,9 @@ class FullDataAction : BaseAnAction() {
                     addNewLine()
                     addSpace()
                     addSpace()
-                    addTextSegment("//")
+                    addTextSegment("///-----")
                     addTextSegment(createCommentEndContent())
+                    addTextSegment("-------")
                     addNewLine()
                 }
         }

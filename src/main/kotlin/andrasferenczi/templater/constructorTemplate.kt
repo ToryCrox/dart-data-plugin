@@ -13,6 +13,9 @@ data class ConstructorTemplateParams(
     val nullSafety: Boolean
 )
 
+/**
+ * 创建构造方法
+ */
 fun createConstructorTemplate(
     templateManager: TemplateManager,
     params: ConstructorTemplateParams

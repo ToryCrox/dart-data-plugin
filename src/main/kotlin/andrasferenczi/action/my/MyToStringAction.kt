@@ -3,6 +3,7 @@ package andrasferenczi.action.my
 import andrasferenczi.action.StaticActionProcessor
 import andrasferenczi.action.data.GenerationData
 import andrasferenczi.action.data.PerformAction
+import andrasferenczi.configuration.ConfigurationDataManager
 import andrasferenczi.declaration.isNullable
 import andrasferenczi.declaration.variableName
 import andrasferenczi.ext.psi.extractClassName
@@ -30,6 +31,7 @@ class MyToStringAction {
 
             val project = actionData.project
 
+            val configuration = ConfigurationDataManager.retrieveData(project)
             val templateManager = TemplateManager.getInstance(project)
             val dartClassName = dartClass.extractClassName()
 
@@ -43,7 +45,8 @@ class MyToStringAction {
                             isNullable = it.isNullable
                         )
                     }
-                )
+                ),
+                configuration = configuration
             )
 
             return PerformAction(

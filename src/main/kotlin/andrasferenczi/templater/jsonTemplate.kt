@@ -29,10 +29,20 @@ private fun Template.addToJson(configuration: ConfigurationData, className: Stri
 
     isToReformat = true
 
-    addTextSegment("String")
+    if (configuration.jsonEqualMap) {
+        addTextSegment("Map<String, dynamic>")
+    } else {
+        addTextSegment("String")
+    }
+
     addSpace()
     addTextSegment(TemplateConstants.TO_JSON_METHOD_NAME)
     withParentheses{}
+    if (configuration.jsonEqualMap) {
+        addSpace()
+        addTextSegment("=> toMap();")
+        return
+    }
 
 
     addSpace()
@@ -42,7 +52,7 @@ private fun Template.addToJson(configuration: ConfigurationData, className: Stri
 
         val parseClassName = configuration.parseWrapper.parseClassName
         if (parseClassName.isNotBlank()) {
-            addTextSegment("${parseClassName}.toJsonString(${TemplateConstants.TO_MAP_METHOD_NAME}())")
+            addTextSegment("${parseClassName}.parseString(${TemplateConstants.TO_MAP_METHOD_NAME}())")
         } else {
             addTextSegment("jsonEncode(${TemplateConstants.TO_MAP_METHOD_NAME})")
         }
@@ -61,9 +71,18 @@ private fun Template.addFromJson(configuration: ConfigurationData, className: St
     addTextSegment(".")
     addTextSegment(TemplateConstants.FROM_JSON_METHOD_NAME)
     withParentheses{
-        addTextSegment("String")
+        if (configuration.jsonEqualMap) {
+            addTextSegment("Map<String, dynamic>")
+        } else {
+            addTextSegment("String")
+        }
         addSpace()
         addTextSegment(TemplateConstants.JSON_VARIABLE_NAME)
+    }
+    if (configuration.jsonEqualMap) {
+        addSpace()
+        addTextSegment("=> $className.fromMap(${TemplateConstants.JSON_VARIABLE_NAME});")
+        return
     }
 
     addSpace()
@@ -94,12 +113,12 @@ fun createJsonDeleteCall(
     dartClass: DartClass
 ): (() -> Unit)? {
 
-    val toMapMethod = dartClass.findMethodByName(TemplateConstants.TO_JSON_METHOD_NAME)
-    val fromMapMethod = dartClass.findNamedConstructor(TemplateConstants.FROM_JSON_METHOD_NAME)
+    val toJsonMethod = dartClass.findMethodByName(TemplateConstants.TO_JSON_METHOD_NAME)
+    val fromJsonMethod = dartClass.findNamedConstructor(TemplateConstants.FROM_JSON_METHOD_NAME)
 
     return listOfNotNull(
-        toMapMethod,
-        fromMapMethod
+        toJsonMethod,
+        fromJsonMethod
     ).map { { it.delete() } }
         .mergeCalls()
 }

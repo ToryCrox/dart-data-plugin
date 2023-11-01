@@ -4,6 +4,9 @@ import andrasferenczi.templater.TemplateConstants
 import andrasferenczi.utils.mergeCalls
 import com.jetbrains.lang.dart.psi.DartClass
 
+/**
+ * 删除
+ */
 fun createMapDeleteCall(
     dartClass: DartClass
 ): (() -> Unit)? {

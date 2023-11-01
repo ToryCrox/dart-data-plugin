@@ -12,6 +12,10 @@ data class MapTemplateParams(
     val useNewKeyword: Boolean,
     val addKeyMapper: Boolean,
     val noImplicitCasts: Boolean,
+    /**
+     * 是否使用下划线的Json名称
+     */
+    val useUnderlineJsonName: Boolean,
     val parseWrapper: ParseWrapper
 )
 
@@ -51,6 +55,7 @@ private fun Template.addAssignKeyMapperIfNotValid() {
 
 private fun Template.addToMap(params: MapTemplateParams) {
     val (_, variables, _, addKeyMapper, _) = params
+    val useUnderlineJsonName = params.useUnderlineJsonName
 
     isToReformat = true
 
@@ -80,7 +85,8 @@ private fun Template.addToMap(params: MapTemplateParams) {
             addNewLine()
 
             variables.forEach {
-                "'${it.mapKeyString}'".also { keyParam ->
+                val jsonKey = if (useUnderlineJsonName) camelCaseToSnakeCase(it.mapKeyString) else it.mapKeyString
+                "'$jsonKey'".also { keyParam ->
                     if (addKeyMapper) {
                         addTextSegment(TemplateConstants.KEYMAPPER_VARIABLE_NAME)
                         withParentheses {
@@ -119,6 +125,7 @@ private fun Template.addFromMap(
     params: MapTemplateParams
 ) {
     val (className, variables, useNewKeyword, addKeyMapper, noImplicitCasts) = params
+    val useUnderlineJsonName = params.useUnderlineJsonName
 
     isToReformat = true
 
@@ -175,7 +182,8 @@ private fun Template.addFromMap(
                 val addMapValue = {
                     addTextSegment(TemplateConstants.MAP_VARIABLE_NAME)
                     withBrackets {
-                        "'${it.mapKeyString}'".also { keyParam ->
+                        val jsonKey = if (useUnderlineJsonName) camelCaseToSnakeCase(it.mapKeyString) else it.mapKeyString
+                        "'$jsonKey'".also { keyParam ->
                             if (addKeyMapper) {
                                 addTextSegment(TemplateConstants.KEYMAPPER_VARIABLE_NAME)
                                 withParentheses {
@@ -266,4 +274,27 @@ fun Template.withParseWrapper(
         }
         return true
     }
+}
+
+/**
+ * 驼峰换成下划线的形式
+ */
+fun camelCaseToSnakeCase(input: String): String {
+    val result = StringBuilder()
+    var prevCharIsUpperCase = false
+
+    for (char in input) {
+        if (char.isUpperCase()) {
+            if (!prevCharIsUpperCase && result.isNotEmpty()) {
+                result.append('_')
+            }
+            result.append(char.toLowerCase())
+            prevCharIsUpperCase = true
+        } else {
+            result.append(char)
+            prevCharIsUpperCase = false
+        }
+    }
+
+    return result.toString()
 }
