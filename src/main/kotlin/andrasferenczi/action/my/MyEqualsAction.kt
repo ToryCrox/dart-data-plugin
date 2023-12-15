@@ -3,14 +3,13 @@ package andrasferenczi.action.my
 import andrasferenczi.action.StaticActionProcessor
 import andrasferenczi.action.data.GenerationData
 import andrasferenczi.action.data.PerformAction
+import andrasferenczi.configuration.ConfigurationDataManager
+import andrasferenczi.declaration.fullTypeName
 import andrasferenczi.declaration.isNullable
 import andrasferenczi.declaration.variableName
 import andrasferenczi.ext.psi.extractClassName
 import andrasferenczi.ext.psi.findMethodsByName
-import andrasferenczi.templater.EqualsTemplateParams
-import andrasferenczi.templater.NamedVariableTemplateParamImpl
-import andrasferenczi.templater.TemplateConstants
-import andrasferenczi.templater.createEqualsTemplate
+import andrasferenczi.templater.*
 import com.intellij.codeInsight.template.TemplateManager
 import com.jetbrains.lang.dart.psi.DartClassDefinition
 
@@ -31,17 +30,21 @@ class MyEqualsAction {
 
             val project = actionData.project
 
+            val configuration = ConfigurationDataManager.retrieveData(project)
             val templateManager = TemplateManager.getInstance(project)
             val dartClassName = dartClass.extractClassName()
 
             val template = createEqualsTemplate(
                 templateManager,
+                configuration.parseWrapper,
                 EqualsTemplateParams(
                     className = dartClassName,
                     variables = declarations.map {
-                        NamedVariableTemplateParamImpl(
-                            it.variableName,
-                            isNullable = it.isNullable
+                        AliasedVariableTemplateParamImpl(
+                            variableName = it.variableName,
+                            isNullable = it.isNullable,
+                            publicVariableName = it.publicVariableName,
+                            type = it.fullTypeName ?: throw RuntimeException("No type is available - this variable should not be assignable from constructor")
                         )
                     }
                 )
